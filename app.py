@@ -21,7 +21,7 @@ chrome_options.add_experimental_option("prefs", {
 })
 chrome_options.add_argument('--disable-gpu')
 chrome_options.add_argument('--disable-software-rasterizer')
-#chrome_options.add_argument('--headless')
+chrome_options.add_argument('--headless')
 
 
 
@@ -37,14 +37,17 @@ def convert(image,name):
     while True:
         try:
             driver.find_element_by_xpath('/html/body/div[2]/div[3]/div/div/div/input').send_keys(image)
+            print("Done 1")
             break
         except:
             pass
     while True:
         try:
             driver.find_element_by_xpath('/html/body/div[2]/div[6]/div/div/div[1]/div/div[1]/button').click()
+            print("Done 2")
             time.sleep(1)
             driver.find_element_by_xpath('/html/body/div[2]/div[6]/div/div/div[1]/div/div[1]/div/a[2]/span').click()
+            print("Done 3")
             break
         except:
             pass
