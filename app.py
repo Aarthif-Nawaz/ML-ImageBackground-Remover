@@ -6,8 +6,10 @@ from werkzeug.utils import secure_filename
 from pathlib import Path
 
 chrome_options = webdriver.ChromeOptions()
+chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
 chrome_options.add_experimental_option("excludeSwitches", ['enable-automation'])
 chrome_options.add_argument("--disable-notifications")
+chrome_options.add_argument("--disable-dev-shm-usage")
 chrome_options.add_argument('--no-sandbox')
 chrome_options.add_argument('--verbose')
 chrome_options.add_experimental_option("prefs", {
@@ -26,7 +28,7 @@ chrome_options.add_argument('--headless')
 def convert(image,name):
     while True:
         try:
-            driver = webdriver.Chrome("chromedriver.exe", options=chrome_options)
+            driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), options=chrome_options)
             driver.get('https://www.slazzer.com/upload')
             break
         except:
