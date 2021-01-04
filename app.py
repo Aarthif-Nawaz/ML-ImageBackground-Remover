@@ -13,7 +13,7 @@ chrome_options.add_argument("--disable-dev-shm-usage")
 chrome_options.add_argument('--no-sandbox')
 chrome_options.add_argument('--verbose')
 chrome_options.add_experimental_option("prefs", {
-    "download.default_directory": os.getcwd()+"\\"+"static\\Non-Background-Images\\",
+    "download.default_directory": os.getcwd()+"/"+"static/Non-Background-Images/",
     "download.prompt_for_download": False,
     "download.directory_upgrade": True,
     "safebrowsing_for_trusted_sources_enabled": False,
@@ -47,7 +47,7 @@ def convert(image,name):
             break
         except:
             pass
-    my_file = Path(os.getcwd() + "\\" + f"static\\Non-Background-Images\\{name}")
+    my_file = Path(os.getcwd() + "/" + f"static/Non-Background-Images/{name}")
     while True:
         if my_file.is_file():
             driver.close()
@@ -77,10 +77,10 @@ def allowed_image(filename):
 @app.route("/", methods=["GET", "POST"])
 def upload_image():
     if request.method == "POST":
-        for file in os.listdir(os.getcwd()+"\\static\\Background-Images"):
-            os.remove(os.path.join(os.getcwd()+"\\static\\Background-Images", file))
-        for file in os.listdir(os.getcwd()+"\\"+"static\\Non-Background-Images"):
-            os.remove(os.path.join(os.getcwd()+"\\"+"static\\Non-Background-Images",file))
+        for file in os.listdir(os.getcwd()+"/static/Background-Images"):
+            os.remove(os.path.join(os.getcwd()+"/static/Background-Images", file))
+        for file in os.listdir(os.getcwd()+"/"+"static/Non-Background-Images"):
+            os.remove(os.path.join(os.getcwd()+"/"+"static/Non-Background-Images",file))
         image = request.files["image"]
         print(image)
         if image.filename == "":
@@ -92,9 +92,9 @@ def upload_image():
             image.save(filepath)
             p = Path(filepath)
             p = p.rename(p.with_suffix('.png'))
-            filename1 = str(p).split("\\")[-1]
+            filename1 = str(p).split("/")[-1]
             print(filename1)
-            c = convert(os.getcwd()+"\\"+str(p),filename1)
+            c = convert(os.getcwd()+"/"+str(p),filename1)
             return render_template('index.html', con=filename1, data=str(p))
         else:
             print("That file extension is not allowed")
