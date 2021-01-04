@@ -30,6 +30,7 @@ def convert(image,name):
         try:
             driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), options=chrome_options)
             driver.get('https://www.slazzer.com/upload')
+            print("Started")
             break
         except:
             pass
