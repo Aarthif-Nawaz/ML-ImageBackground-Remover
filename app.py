@@ -21,7 +21,7 @@ chrome_options.add_experimental_option("prefs", {
 })
 chrome_options.add_argument('--disable-gpu')
 chrome_options.add_argument('--disable-software-rasterizer')
-chrome_options.add_argument('--headless')
+#chrome_options.add_argument('--headless')
 
 
 
