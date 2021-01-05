@@ -1,65 +1,15 @@
-from selenium import webdriver
-import time
 import os
 from flask import Flask,redirect,render_template,request
 from werkzeug.utils import secure_filename
-from pathlib import Path
+import requests
+import shutil
+import shlex
+import json
+import subprocess
+import random
 
-chrome_options = webdriver.ChromeOptions()
-chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
-chrome_options.add_experimental_option("excludeSwitches", ['enable-automation'])
-chrome_options.add_argument("--disable-notifications")
-chrome_options.add_argument("--disable-dev-shm-usage")
-chrome_options.add_argument('--no-sandbox')
-chrome_options.add_argument('--verbose')
-chrome_options.add_experimental_option("prefs", {
-    "download.default_directory": os.getcwd()+"/"+"static/Non-Background-Images/",
-    "download.prompt_for_download": False,
-    "download.directory_upgrade": True,
-    "safebrowsing_for_trusted_sources_enabled": False,
-    "safebrowsing.enabled": False
-})
-chrome_options.add_argument('--disable-gpu')
-chrome_options.add_argument('--disable-software-rasterizer')
-chrome_options.add_argument('--headless')
-
-
-
-def convert(image,name):
-    while True:
-        try:
-            driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), options=chrome_options)
-            driver.get('https://www.slazzer.com/upload')
-            print("Started")
-            break
-        except:
-            pass
-    while True:
-        try:
-            driver.find_element_by_xpath('/html/body/div[2]/div[3]/div/div/div/input').send_keys(image)
-            print("Done 1")
-            break
-        except:
-            pass
-    while True:
-        try:
-            driver.find_element_by_xpath('/html/body/div[2]/div[6]/div/div/div[1]/div/div[1]/button').click()
-            print("Done 2")
-            time.sleep(1)
-            driver.find_element_by_xpath('/html/body/div[2]/div[6]/div/div/div[1]/div/div[1]/div/a[2]/span').click()
-            print("Done 3")
-            break
-        except:
-            pass
-    my_file = Path(os.getcwd() + "/" + f"static/Non-Background-Images/{name}")
-    while True:
-        if my_file.is_file():
-            driver.close()
-            break
-        else:
-            pass
-    return True
 Background = os.path.join('static', 'Background-Images')
+keys = ['cR5VuqsG332s9idv336LrFB4','BJckx2EsNiChs7EmXxq5gRkU','Fx7h8ohWhpsZSZ4GWdbt75Pf','QwebGn4QUwrbwtmpR9VX7GgS','gJJfbMfeHi6782ofpjitppB3','8HUvQ1tmMsDzUqdANBAUoewp','bV84X5XMLP9stMjm2ZTpdH9s']
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = "073129749013740932ABFG879076543"
@@ -94,21 +44,37 @@ def upload_image():
             filename = secure_filename(image.filename)
             filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             image.save(filepath)
-            p = Path(filepath)
-            p = p.rename(p.with_suffix('.png'))
-            filename1 = str(p).split("/")[-1]
-            print(filename1)
-            c = convert(os.getcwd()+"/"+str(p),filename1)
-            return render_template('index.html', con=filename1, data=str(p))
+            while True:
+                try:
+                    response = requests.post(
+                        'https://api.remove.bg/v1.0/removebg',
+                        files={'image_file': open(filepath, 'rb')},
+                        data={'size': 'auto'},
+                        headers={'X-Api-Key': random.choice(keys)},
+                    )
+                    if response.status_code == requests.codes.ok:
+                        with open(filename, 'wb') as out:
+                            out.write(response.content)
+                        shutil.move(os.getcwd() + "/" + filename, os.getcwd() + "/static/Non-Background-Images")
+                        return render_template('index.html', con=filename, data=filepath)
+                    else:
+                        print("Error:", response.status_code, response.text)
+                        cmd = f'''curl -X POST -F "file=@{filepath}" "https://api.boring-images.ml/v1.0/transparent-net?api_key=ak-broad-haze-7fff750"'''
+                        args = shlex.split(cmd)
+                        process = subprocess.Popen(args, shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                        stdout, stderr = process.communicate()
+                        if (str(stdout).__contains__("error")):
+                            pass
+                        else:
+                            response = json.loads(stdout.decode('utf-8'))
+                            img = response['result']
+                            return render_template('index.html', uri=img, data=filepath)
+                except:
+                    pass
         else:
             print("That file extension is not allowed")
             return redirect(request.url)
     return render_template('index.html')
-
-
-
-
-
 
 if __name__== '__main__':
     app.run(debug=True)

@@ -68,6 +68,8 @@
 							<div class="image fit">
 								{% if con %}
 									<img src="../static/Non-Background-Images/{{ con }}" alt="Non Background Image" />
+								{% elif uri %}
+									<img src="{{ uri }}" alt="Non Background Image" />
 								{% else %}
 									<p></p>
 								{% endif %}

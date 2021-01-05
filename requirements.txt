@@ -1,5 +1,4 @@
 Flask
-selenium
 gunicorn
-webdriver-manager
 Werkzeug
+requests
