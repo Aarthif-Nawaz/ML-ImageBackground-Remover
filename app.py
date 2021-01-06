@@ -1,5 +1,5 @@
 import os
-from flask import Flask,redirect,render_template,request
+from flask import Flask,redirect,render_template,request,send_from_directory,send_file,url_for,current_app
 from werkzeug.utils import secure_filename
 import requests
 import shutil
@@ -9,11 +9,13 @@ import subprocess
 import random
 
 Background = os.path.join('static', 'Background-Images')
-keys = ['cR5VuqsG332s9idv336LrFB4','BJckx2EsNiChs7EmXxq5gRkU','Fx7h8ohWhpsZSZ4GWdbt75Pf','QwebGn4QUwrbwtmpR9VX7GgS','gJJfbMfeHi6782ofpjitppB3','8HUvQ1tmMsDzUqdANBAUoewp','bV84X5XMLP9stMjm2ZTpdH9s']
+NonBackground = os.path.join('static','Non-Background-Images')
+keys = ['cR5VuqsG332s9idv336LrFB4','BJckx2EsNiChs7EmXxq5gRkU','Fx7h8ohWhpsZSZ4GWdbt75Pf','QwebGn4QUwrbwtmpR9VX7GgS','gJJfbMfeHi6782ofpjitppB3','8HUvQ1tmMsDzUqdANBAUoewp','bV84X5XMLP9stMjm2ZTpdH9s','wtFEZ6dsQByaoq7bdWmsJFDM','2QTtcJNDa49C712LduU912Dm','sxTn9Sak1uZVB48Wy5kSjE6v','7dkXHUWEhaeMLEYsSUr2E6AJ','Sm2VhtgBp7JdrQKEmdovnMQL','6aRy3y7DrorYKQKQozHD1Xpn','kgsDsedicqEY7MxEw4Uew14X']
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = "073129749013740932ABFG879076543"
 app.config['UPLOAD_FOLDER'] = Background
+app.config['DOWNLOAD_FOLDER'] = NonBackground
 app.config["ALLOWED_IMAGE_EXTENSIONS"] = ["JPEG", "JPG", "PNG", "GIF"]
 
 def allowed_image(filename):
@@ -26,6 +28,11 @@ def allowed_image(filename):
         return True
     else:
         return False
+
+@app.route('/download/<path:filename>')
+def downloads(filename):
+    uploads = os.path.join(current_app.root_path, app.config['DOWNLOAD_FOLDER'])
+    return send_from_directory(directory=uploads, filename=filename,as_attachment=True)
 
 
 @app.route("/", methods=["GET", "POST"])
@@ -68,7 +75,7 @@ def upload_image():
                         else:
                             response = json.loads(stdout.decode('utf-8'))
                             img = response['result']
-                            return render_template('index.html', uri=img, data=filepath)
+                            return render_template('index.html', uri=img,con=filename, data=filepath)
                 except:
                     pass
         else:
