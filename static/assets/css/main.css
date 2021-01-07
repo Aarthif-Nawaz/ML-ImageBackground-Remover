@@ -49,11 +49,11 @@ blockquote, q {
 }
 #spinner{
   visibility: hidden;
-  width: 620px;
-  height: 620px;
+  width: 220px;
+  height: 220px;
     content: 'Loading ';
-  border: 15px solid #f3f3f3;
-  border-top:15px solid #f25a41;
+  border: 10px solid #f3f3f3;
+  border-top:10px solid #f25a41;
   border-radius: 100%;
 
   position: absolute;
@@ -76,6 +76,7 @@ blockquote, q {
 
 #spinner.show {
   visibility: visible;
+
 }
 
 @keyframes fadeOut {
@@ -94,16 +95,23 @@ blockquote, q {
   background-color: #e5474b;
   border: none;
   color: white;
-  padding: 16px 40px;
+  padding: 1px 10px;
   cursor: pointer;
-    margin-left: 25px;
-    margin-top: 10px;
-  font-size: 24px;
+  font-size: 18px;
 }
 
 /* Darker background on mouse-over */
 .btn:hover {
   background-color: red;
+}
+a{
+    text-decoration: none;
+}
+.move{
+    text-decoration: none;
+    position: absolute;
+    left: 40%;
+    top: 90%;
 }
 
 blockquote:before, blockquote:after, q:before, q:after {

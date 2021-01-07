@@ -73,12 +73,12 @@
                     <img src="../static/Non-Background-Images/{{ con }}" alt="Non Background Image"/>
                     <br>
                     <br>
-                    <button class="btn"><i class="fa fa-download"></i><a href="{{ url_for('downloads',filename=con) }}"> Download</a></button>
-                    {% elif uri or con %}
+                    <a href="{{ url_for('downloads',filename=con) }}" class="move"><button class="btn"> Download </button></a>
+                    {% elif uri %}
                     <img src="{{ uri }}" alt="Non Background Image"/>
                     <br>
                     <br>
-                    <button class="btn"><i class="fa fa-download"></i><a href="{{ url_for('downloads',filename=con) }}"> Download</a></button>
+                    <a href="{{ url_for('downloads',filename=uri) }}" class="move"> <button class="btn"> Download </button></a>
                     {% else %}
                     <p></p>
                     {% endif %}
@@ -114,10 +114,12 @@
     }
     function fetchData() {
   showSpinner()
+        document.getElementsByTagName('img').style.opacity = 0.3
   fetch('/')
   .then(response => response.json())
     .then(data => {
     hideSpinner()
+        document.getElementsByTagName('img').style.opacity = 1
     console.log("hello")
   });
 }

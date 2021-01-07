@@ -32,7 +32,10 @@ def allowed_image(filename):
 @app.route('/download/<path:filename>')
 def downloads(filename):
     uploads = os.path.join(current_app.root_path, app.config['DOWNLOAD_FOLDER'])
-    return send_from_directory(directory=uploads, filename=filename,as_attachment=True)
+    try:
+        return send_from_directory(directory=uploads, filename=filename,as_attachment=True)
+    except:
+        return send_file(filename)
 
 
 @app.route("/", methods=["GET", "POST"])
@@ -75,7 +78,7 @@ def upload_image():
                         else:
                             response = json.loads(stdout.decode('utf-8'))
                             img = response['result']
-                            return render_template('index.html', uri=img,con=filename, data=filepath)
+                            return render_template('index.html', uri=img, data=filepath)
                 except:
                     pass
         else:
